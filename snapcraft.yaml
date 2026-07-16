@@ -2,12 +2,14 @@ name: walden
 title: Walden
 base: core24
 version: '1.0.0'
-summary: A minimal, distraction-free markdown local desktop blog publisher
+summary: A minimal, distraction-free, local desktop blog publisher
 description: |
-  Walden is a minimal, distraction-free markdown local desktop blog publisher
-  that integrates with your Github Pages backed sites. 
+Walden is a minimal, distraction-free, desktop blog 
+publisher that integrates directly with your Github Pages 
+backed sites. Spend less time tinkering in Github and more time 
+writing the next great article or novel.
 
-license: MIT
+license: GPL-2.0+
 contact: https://github.com/aaronprisk/walden
 website: https://aaronprisk.com
 issues: https://github.com/aaronprisk/walden/issues

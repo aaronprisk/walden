@@ -9,7 +9,7 @@ const easyMDE = new EasyMDE({
     "bold", "italic", "heading", "|", 
     "quote", "unordered-list", "ordered-list", "|", 
     "link", 
-    // ⚡ CUSTOM IMAGE HANDLER: Replaces the default text prompt with our dynamic asset pipeline!
+    // Custom image upload and processing
     {
       name: "custom-image",
       action: async function drawImageButton(editor) {
@@ -257,7 +257,7 @@ ${content}`;
   }
 });
 
-// 🚀 Publish direct to Git (With Auto-Save Fail-Safe!)
+// Publish direct to Git (With Auto-Save Fail-Safe)
 document.getElementById('publish-btn').addEventListener('click', async () => {
   const title = document.getElementById('post-title').value.trim();
   const content = easyMDE.value();
@@ -269,7 +269,7 @@ document.getElementById('publish-btn').addEventListener('click', async () => {
   if (!title) return alert("Please add a title before publishing.");
   if (!currentWorkspacePath) return alert("Please finish setup configuration first.");
 
-  // --- 1. AUTOMATIC SAVE DRAFT SEQUENCE ---
+  // Automatically save draft to local
   const engine = localStorage.getItem('walden_engine') || 'vanilla';
   const cleanSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   
@@ -312,7 +312,7 @@ ${content}`;
     currentOpenFilepath = targetPath;
     await refreshFilesList();
     
-    // --- 2. PRODUCTION DEPLOYMENT SEQUENCE ---
+    // Git commit and push process
     const filename = path.basename(currentOpenFilepath);
     alert("Draft autosaved! Staging, committing, and pushing logs to web production...");
     

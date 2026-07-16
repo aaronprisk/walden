@@ -26,7 +26,7 @@ app.whenReady().then(createWindow);
 let activeRepoLocalPath = null; 
 let currentEnginePath = null; 
 
-// 🔄 Sync Repository (Clone or Pull)
+// Sync Repository (Clone or Pull)
 ipcMain.handle('sync-repository', async (event, { username, repo, token, engine }) => {
   const repoUrl = `https://github.com/${username}/${repo}.git`;
   const safeRepoFolderName = `.walden-cache-${repo.replace(/[^a-zA-Z0-9]/g, '-')}`;
@@ -67,7 +67,7 @@ ipcMain.handle('sync-repository', async (event, { username, repo, token, engine 
   }
 });
 
-// 📂 Read Local Markdown Directory Files
+// Read Local Markdown Directory Files
 ipcMain.handle('read-directory', async () => {
   try {
     if (!currentEnginePath || !fs.existsSync(currentEnginePath)) return [];
@@ -80,18 +80,18 @@ ipcMain.handle('read-directory', async () => {
   }
 });
 
-// 📖 Read File Content
+// Read File Content
 ipcMain.handle('read-file', async (event, filePath) => {
   return fs.readFileSync(filePath, 'utf-8');
 });
 
-// 💾 Save Local Draft Document
+// Save Local Draft Document
 ipcMain.handle('write-file', async (event, { filePath, content }) => {
   fs.writeFileSync(filePath, content, 'utf-8');
   return true;
 });
 
-// 🖼️ Native Image Asset Ingestion Pipeline
+// Native Image Asset Ingestion Pipeline
 ipcMain.handle('select-and-copy-image', async (event) => {
   if (!activeRepoLocalPath) {
     throw new Error("No active repository workspace path is initialized.");
@@ -110,7 +110,7 @@ ipcMain.handle('select-and-copy-image', async (event) => {
   const sourceImagePath = result.filePaths[0];
   const imageExt = path.extname(sourceImagePath);
   
-  // Save directly to the root img folder of your website repo!
+  // Save directly to the root img folder of your website repo
   const targetImgFolder = path.join(activeRepoLocalPath, 'img');
   if (!fs.existsSync(targetImgFolder)) {
     fs.mkdirSync(targetImgFolder, { recursive: true });
@@ -125,7 +125,7 @@ ipcMain.handle('select-and-copy-image', async (event) => {
   return `img/${cleanFilename}`;
 });
 
-// 🚀 Publish Git Commit and Push (Bulletproof Multi-Directory Globber Scanner)
+// Publish Git Commit and Push
 ipcMain.handle('publish-git', async (event, { filename, username, token }) => {
   try {
     const relativeFolder = currentEnginePath.endsWith('_posts') ? '_posts' : 'blog';

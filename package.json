@@ -1,0 +1,16 @@
+{
+  "name": "walden",
+  "version": "0.1.0",
+  "description": "A minimalist Git-backed CMS",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "devDependencies": {
+    "electron": "^43.1.0"
+  },
+  "dependencies": {
+    "globby": "^16.2.1",
+    "isomorphic-git": "^1.38.7"
+  }
+}

@@ -1,0 +1,64 @@
+name: walden
+title: Walden
+base: core24
+version: '1.0.0'
+summary: A minimal, distraction-free markdown local desktop blog publisher
+description: |
+  Walden is a minimal, distraction-free markdown local desktop blog publisher
+  that integrates with your Github Pages backed sites. 
+
+license: MIT
+contact: https://github.com/aaronprisk/walden
+website: https://aaronprisk.com
+issues: https://github.com/aaronprisk/walden/issues
+source-code: https://github.com/aaronprisk/walden
+
+icon: snap/gui/walden.png
+
+confinement: strict
+grade: stable
+
+lint:
+  ignore:
+    - library
+    - gpu
+
+apps:
+  walden:
+    command: walden/walden --no-sandbox
+    extensions: [gnome]
+    plugs:
+      - browser-support
+      - network
+      - network-bind
+      - home
+      - personal-files
+    environment:
+      TMPDIR: $XDG_RUNTIME_DIR
+
+plugs:
+  personal-files:
+    interface: personal-files
+    write:
+      - $HOME/.gitconfig
+      - $HOME/.config/git
+
+parts:
+  walden:
+    plugin: nil
+    source: .
+    override-build: |
+      npm install
+      export DEBUG=electron-packager,electron-download
+      
+      npx --yes electron-packager . --overwrite --platform=linux --out=release-build --prune=true
+      
+      mkdir -p $SNAPCRAFT_PART_INSTALL/walden
+      cp -rv ./release-build/walden-linux-*/* $SNAPCRAFT_PART_INSTALL/walden/
+    build-snaps:
+      - node/22/stable
+    build-packages:
+      - unzip
+    stage-packages:
+      - libnss3
+      - libnspr4

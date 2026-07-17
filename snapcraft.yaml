@@ -34,14 +34,14 @@ apps:
       - network
       - network-bind
       - home
-      - personal-files
+      - gitconfig
     environment:
       TMPDIR: $XDG_RUNTIME_DIR
 
 plugs:
-  personal-files:
+  gitconfig:
     interface: personal-files
-    write:
+    read:
       - $HOME/.gitconfig
       - $HOME/.config/git
 

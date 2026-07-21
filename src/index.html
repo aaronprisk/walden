@@ -20,7 +20,11 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: var(--bg-color); color: var(--text-color); display: flex; height: 100vh; overflow: hidden; }
 
-    /* Left Sidebar: Browser */
+    /* Logo */
+    .brand-container { display: flex; align-items: center; gap: 8px; }
+    .app-header-logo { width: 32px; height: 32px; object-fit: contain; }
+
+    /* Browser */
     .sidebar { width: 260px; background: var(--sidebar-bg); border-right: 1px solid var(--border-color); display: flex; flex-direction: column; justify-content: space-between; }
     .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border-color); font-weight: bold; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center; }
     .posts-list { flex: 1; overflow-y: auto; list-style: none; padding: 10px; }
@@ -28,7 +32,7 @@
     .post-item:hover { background: rgba(0,0,0,0.05); }
     .sidebar-footer { padding: 15px; border-top: 1px solid var(--border-color); }
 
-    /* Center Stage: Main Editor */
+    /* Main Editor */
     .main-content { flex: 1; display: flex; flex-direction: column; padding: 40px; overflow-y: auto; }
     .editor-header { display: flex; gap: 15px; margin-bottom: 20px; align-items: center; }
     input[type="text"] { flex: 1; padding: 10px 0; font-size: 1.8rem; border: none; background: transparent; border-bottom: 1px solid var(--border-color); outline: none; font-weight: 600; color: var(--text-color); }
@@ -36,13 +40,13 @@
     .action-btn.secondary { background: transparent; color: var(--text-color); border: 1px solid var(--border-color); }
     .action-btn:hover { opacity: 0.9; }
 
-    /* High-Contrast EasyMDE Fixes */
+    /* EasyMDE */
     .EasyMDEContainer .editor-toolbar { background: #e8e4de !important; border-color: var(--border-color) !important; opacity: 1 !important; border-top-left-radius: 4px; border-top-right-radius: 4px; }
     .EasyMDEContainer .editor-toolbar button { color: #2e2e2e !important; }
     .EasyMDEContainer .editor-toolbar button.active, .EasyMDEContainer .editor-toolbar button:hover { background: #dcd7ce !important; border-color: #999 !important; }
     .CodeMirror { border-color: var(--border-color) !important; background: white !important; font-size: 1rem; border-bottom-left-radius: 4px; border-bottom-right-radius: 4px; color: var(--text-color); }
 
-    /* Right Overlay: Settings Panel */
+    /* Settings Panel */
     .settings-panel { position: fixed; right: -350px; top: 0; width: 350px; height: 100%; background: white; box-shadow: -5px 0 25px rgba(0,0,0,0.1); border-left: 1px solid var(--border-color); transition: right 0.3s ease; padding: 30px; display: flex; flex-direction: column; gap: 20px; z-index: 1000; }
     .settings-panel.open { right: 0; }
     .settings-panel h3 { font-size: 1.3rem; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; }
@@ -50,7 +54,7 @@
     .form-group label { font-size: 0.85rem; font-weight: bold; color: #666; }
     .form-group input { padding: 8px; border: 1px solid var(--border-color); border-radius: 4px; outline: none; }
     
-    /* Style the native EasyMDE preview canvas */
+    /* EasyMDE preview canvas */
     .EasyMDEContainer .editor-preview-active {
       background: white !important;
       color: var(--text-color) !important;
@@ -58,7 +62,7 @@
       padding: 30px;
     }
 
-    /* Ensure headings inside the preview look distinct and crisp */
+    /* Editor Headings */
     .editor-preview-active h1, 
     .editor-preview-active h2, 
     .editor-preview-active h3 {
@@ -79,7 +83,11 @@
   <div class="sidebar">
     <div>
       <div class="sidebar-header">
-        <span>🏡 Walden</span>
+        <div class="brand-container">
+          <img src="./assets/icon.png" alt="Walden Logo" class="app-header-logo">
+          <span>Walden</span>
+        </div>
+        
         <button id="new-btn" class="action-btn" style="padding: 4px 10px; font-size: 0.8rem;">+ New</button>
         <button id="sync-btn" class="action-btn secondary" style="padding: 4px 8px; font-size: 0.8rem;" title="Pull latest changes from GitHub">Sync</button>
       </div>

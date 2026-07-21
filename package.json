@@ -1,6 +1,6 @@
 {
   "name": "walden",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "description": "A minimalist Git-backed CMS",
   "main": "main.js",
   "scripts": {

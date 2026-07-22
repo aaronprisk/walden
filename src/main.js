@@ -45,7 +45,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   const user = localStorage.getItem('walden_user') || '';
   const repo = localStorage.getItem('walden_repo') || '';
   const token = localStorage.getItem('walden_token') || '';
-  const engine = localStorage.getItem('walden_engine') || 'vanilla'; // Default to vanilla
+  const engine = localStorage.getItem('walden_engine') || 'jekyll'; // Default to jekyll
 
   document.getElementById('cfg-username').value = user;
   document.getElementById('cfg-repo').value = repo;
@@ -179,7 +179,7 @@ document.getElementById('sync-btn').addEventListener('click', async () => {
   const user = localStorage.getItem('walden_user');
   const repo = localStorage.getItem('walden_repo');
   const token = localStorage.getItem('walden_token');
-  const engine = localStorage.getItem('walden_engine') || 'vanilla';
+  const engine = localStorage.getItem('walden_engine') || 'jekyll';
 
   if (!token || !user || !repo) {
     return alert("Please complete your setup configuration profile before attempting a sync execution.");
@@ -211,7 +211,7 @@ document.getElementById('save-local-btn').addEventListener('click', async () => 
   if (!title) return alert("Please add a title before saving.");
   if (!currentWorkspacePath) return alert("Please finish setup configuration first.");
 
-  const engine = localStorage.getItem('walden_engine') || 'vanilla';
+  const engine = localStorage.getItem('walden_engine') || 'jekyll';
   const cleanSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   
   let expectedFilename;
@@ -270,7 +270,7 @@ document.getElementById('publish-btn').addEventListener('click', async () => {
   if (!currentWorkspacePath) return alert("Please finish setup configuration first.");
 
   // Automatically save draft to local
-  const engine = localStorage.getItem('walden_engine') || 'vanilla';
+  const engine = localStorage.getItem('walden_engine') || 'jekyll';
   const cleanSlug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
   
   let expectedFilename;

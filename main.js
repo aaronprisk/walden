@@ -9,7 +9,7 @@ let mainWindow;
 
 function createWindow() {
   mainWindow = new BrowserWindow({
-    width: 1000,
+    width: 1200,
     height: 800,
     autoHideMenuBar: true,
     webPreferences: {
@@ -152,6 +152,51 @@ ipcMain.handle('publish-git', async (event, { filename, username, token }) => {
       author: { name: username, email: `${username}@users.noreply.github.com` }
     });
 
+    await git.push({
+      fs,
+      http,
+      dir: activeRepoLocalPath,
+      ref: 'main',
+      onAuth: () => ({ username: token })
+    });
+
+    return true;
+  } catch (err) {
+    throw new Error(err.message);
+  }
+});
+
+// Delete post from local draft and repo
+ipcMain.handle('delete-post', async (event, { filePath, filename, username, token }) => {
+  try {
+    if (!activeRepoLocalPath) {
+      throw new Error("No active repository workspace path is initialized.");
+    }
+
+    // Determine draft path
+    const relativeFilePath = path.relative(activeRepoLocalPath, filePath);
+
+    // Delete local draft
+    if (fs.existsSync(filePath)) {
+      fs.unlinkSync(filePath);
+    }
+
+    // Stage the file deletion
+    await git.remove({
+      fs,
+      dir: activeRepoLocalPath,
+      filepath: relativeFilePath
+    });
+
+    // Commit the deletion
+    await git.commit({
+      fs,
+      dir: activeRepoLocalPath,
+      message: `Deleted entry via Walden: ${filename}`,
+      author: { name: username, email: `${username}@users.noreply.github.com` }
+    });
+
+    // Push the delete commit
     await git.push({
       fs,
       http,

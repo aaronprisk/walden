@@ -322,3 +322,56 @@ ${content}`;
     alert(`Deployment / Auto-Save Error: ${error.message}`);
   }
 });
+
+
+// Delete post from workspace and remote repository
+document.getElementById('delete-btn').addEventListener('click', async () => {
+  if (!currentOpenFilepath) {
+    return alert("No file is currently open to delete!");
+  }
+
+  const title = document.getElementById('post-title').value.trim() || 'this post';
+  
+  // Omni Man - Are you sure?
+  const isConfirmed = confirm(
+    `Are you sure you want to permanently delete "${title}"?`
+  );
+
+  if (!isConfirmed) return; // User clicked Cancel
+
+  const token = localStorage.getItem('walden_token');
+  const user = localStorage.getItem('walden_user');
+  const path = require('path');
+  const filename = path.basename(currentOpenFilepath);
+
+  const deleteBtn = document.getElementById('delete-btn');
+  const originalText = deleteBtn.innerText;
+  deleteBtn.innerText = "Deleting...";
+  deleteBtn.disabled = true;
+
+  try {
+    // Tell the main process to delete the file and sync
+    await ipcRenderer.invoke('delete-post', { 
+      filePath: currentOpenFilepath, 
+      filename, 
+      username: user, 
+      token 
+    });
+
+    alert("Post successfully deleted from your blog!");
+
+    // Scrub the editor view and refresh the sidebar list
+    currentOpenFilepath = null;
+    document.getElementById('post-title').value = '';
+    document.getElementById('post-desc').value = '';
+    document.getElementById('post-tags').value = '';
+    easyMDE.value('');
+    
+    await refreshFilesList();
+  } catch (err) {
+    alert(`Deletion failed: ${err.message}`);
+  } finally {
+    deleteBtn.innerText = originalText;
+    deleteBtn.disabled = false;
+  }
+});

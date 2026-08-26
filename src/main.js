@@ -5,6 +5,18 @@ const easyMDE = new EasyMDE({
   element: document.getElementById('markdown-editor'),
   spellChecker: true,
   status: false,
+  // Custom preview system for local asset handling
+  previewRender: function(plainText) {
+    let processedText = plainText;
+    if (currentWorkspacePath) {
+      const path = require('path');
+      const rootDir = path.dirname(currentWorkspacePath); 
+      const fileUri = 'file://' + rootDir.replace(/\\/g, '/'); 
+      processedText = processedText.replace(/\]\(\/(img|audio)\//g, `](${fileUri}/$1/`);
+      processedText = processedText.replace(/src="\/(img|audio)\//g, `src="${fileUri}/$1/`);
+    }
+    return this.parent.markdown(processedText);
+  },
   toolbar: [
     "bold", "italic", "heading", "|", 
     "quote", "unordered-list", "ordered-list", "|", 
@@ -30,6 +42,33 @@ const easyMDE = new EasyMDE({
       },
       className: "fa fa-picture-o",
       title: "Insert Local Image Asset",
+    },
+    {
+      name: "custom-audio",
+      action: async function drawAudioButton(editor) {
+        try {
+          // Grab the title to format the filename
+          const titleValue = document.getElementById('post-title').value.trim();
+          const slugTitle = titleValue 
+            ? titleValue.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '') 
+            : null;
+
+          const relativeAssetPath = await ipcRenderer.invoke('select-and-copy-audio', slugTitle);
+          
+          if (relativeAssetPath) {
+            const cm = editor.codemirror;
+            const doc = cm.getDoc();
+            const cursor = doc.getCursor();
+            
+            // Insert HTML5 audio element
+            doc.replaceRange(`\n<audio controls src="/${relativeAssetPath}"></audio>\n`, cursor);
+          }
+        } catch (err) {
+          alert("Audio ingestion failed: " + err.message);
+        }
+      },
+      className: "fa fa-music",
+      title: "Insert Local Audio Asset",
     },
     "|", 
     "preview", "side-by-side", "fullscreen", "|", 
@@ -225,7 +264,7 @@ document.getElementById('save-local-btn').addEventListener('click', async () => 
   const path = require('path');
   let targetPath = currentOpenFilepath;
 
-  if (!targetPath || !targetPath.endsWith(expectedFilename)) {
+  if (!targetPath) {
     targetPath = path.join(currentWorkspacePath, expectedFilename);
   }
 
@@ -284,7 +323,7 @@ document.getElementById('publish-btn').addEventListener('click', async () => {
   const path = require('path');
   let targetPath = currentOpenFilepath;
 
-  if (!targetPath || !targetPath.endsWith(expectedFilename)) {
+  if (!targetPath) {
     targetPath = path.join(currentWorkspacePath, expectedFilename);
   }
 

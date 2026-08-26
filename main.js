@@ -126,13 +126,48 @@ ipcMain.handle('select-and-copy-image', async (event) => {
   return `img/${cleanFilename}`;
 });
 
+// Audio Asset Pipeline
+ipcMain.handle('select-and-copy-audio', async (event, suggestedSlug) => {
+  if (!activeRepoLocalPath) {
+    throw new Error("No active repository workspace path is initialized.");
+  }
+
+  const result = await dialog.showOpenDialog(mainWindow, {
+    title: 'Select Audio Asset for Entry',
+    filters: [{ name: 'Audio', extensions: ['mp3', 'wav'] }],
+    properties: ['openFile']
+  });
+
+  if (result.canceled || result.filePaths.length === 0) {
+    return null;
+  }
+
+  const sourceAudioPath = result.filePaths[0];
+  const audioExt = path.extname(sourceAudioPath);
+  
+  // Push file to audio directory
+  const targetAudioFolder = path.join(activeRepoLocalPath, 'audio');
+  if (!fs.existsSync(targetAudioFolder)) {
+    fs.mkdirSync(targetAudioFolder, { recursive: true });
+  }
+
+  // Use the article slug if provided, otherwise use timestamp
+  const cleanFilename = suggestedSlug ? `${suggestedSlug}${audioExt}` : `audio-${Date.now()}${audioExt}`;
+  const destinationPath = path.join(targetAudioFolder, cleanFilename);
+
+  fs.copyFileSync(sourceAudioPath, destinationPath);
+
+  // Return file name to the editor
+  return `audio/${cleanFilename}`;
+});
+
 // Publish Git Commit and Push
 ipcMain.handle('publish-git', async (event, { filename, username, token }) => {
   try {
     const relativeFolder = currentEnginePath.endsWith('_posts') ? '_posts' : 'blog';
     
     // We target files explicitly by removing the dot prefix so isomorphic-git processes them correctly
-    const activePaths = await globby([`${relativeFolder}/**`, 'img/**'], { 
+    const activePaths = await globby([`${relativeFolder}/**`, 'img/**', 'audio/**'], { 
       cwd: activeRepoLocalPath,
       gitignore: false // Disable gitignore check so newly created local asset trees are fully parsed
     });

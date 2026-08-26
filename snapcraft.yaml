@@ -1,7 +1,7 @@
 name: walden
 title: Walden
 base: core24
-version: '1.0.2'
+version: '1.0.4'
 summary: A minimal, distraction-free, local desktop blog publisher
 description: |
   Walden is a minimal, distraction-free, desktop blog 
@@ -34,6 +34,7 @@ apps:
       - network
       - network-bind
       - home
+      - audio-playback
     environment:
       TMPDIR: $XDG_RUNTIME_DIR
 
